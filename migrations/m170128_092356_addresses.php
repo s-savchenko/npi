@@ -19,8 +19,8 @@ class m170128_092356_addresses extends Migration
                 'address_1' => $this->string(),
                 'country_code' => $this->string(),
                 'country_name' => $this->string(),
-                'address_type' => $this->string(),
-                'address_purpose' => $this->string(),
+                'type' => $this->string(),
+                'purpose' => $this->string(),
                 'number' => $this->bigInteger()
             ]
         );

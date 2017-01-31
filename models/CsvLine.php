@@ -27,6 +27,7 @@ namespace app\models;
  * @property $enumeration_date
  * @property $taxonomies
  * @property $identifiers
+ * @property $addresses
  */
 class CsvLine
 {
@@ -53,12 +54,14 @@ class CsvLine
             return $this->getTaxonomies();
         elseif ($name == 'identifiers')
             return $this->getIdentifiers();
+        elseif ($name == 'addresses')
+            return $this->getAddresses();
 
         $fieldNumber = $this->map[$name];
         return $this->line[$fieldNumber];
     }
 
-    public function getTaxonomies()
+    protected function getTaxonomies()
     {
         $taxonomies = [];
         for ($i = 0; $i < $this->map['taxonomiesQuantity']; $i++) {
@@ -77,7 +80,7 @@ class CsvLine
         return $taxonomies;
     }
 
-    public function getIdentifiers()
+    protected function getIdentifiers()
     {
         $identifiers = [];
         for ($i = 0; $i < $this->map['identifiersQuantity']; $i++) {
@@ -94,5 +97,33 @@ class CsvLine
                 ];
         }
         return $identifiers;
+    }
+
+    protected function getAddresses()
+    {
+        return [
+            [
+                'city' => $this->line[$this->map['mailing_city']],
+                'address_2' => $this->line[$this->map['mailing_address_2']],
+                'telephone_number' => $this->line[$this->map['mailing_telephone_number']],
+                'fax_number' => $this->line[$this->map['mailing_fax_number']],
+                'state' => $this->line[$this->map['mailing_state']],
+                'postal_code' => $this->line[$this->map['mailing_postal_code']],
+                'address_1' => $this->line[$this->map['mailing_address_1']],
+                'country_code' => $this->line[$this->map['mailing_country_code']],
+                'purpose' => 'mailing'
+            ],
+            [
+                'city' => $this->line[$this->map['location_city']],
+                'address_2' => $this->line[$this->map['location_address_2']],
+                'telephone_number' => $this->line[$this->map['location_telephone_number']],
+                'fax_number' => $this->line[$this->map['location_fax_number']],
+                'state' => $this->line[$this->map['location_state']],
+                'postal_code' => $this->line[$this->map['location_postal_code']],
+                'address_1' => $this->line[$this->map['location_address_1']],
+                'country_code' => $this->line[$this->map['location_country_code']],
+                'purpose' => 'location'
+            ],
+        ];
     }
 }

@@ -38,5 +38,21 @@ return [
     'identifierIssuer_1' => 111,                // CSV Column Name: Other Provider Identifier Issuer_1
 
     //addresses
-    ''
+    'mailing_city' => 22,               // CSV Column Name: Provider Business Mailing Address City Name
+    'mailing_address_2' => 21,          // CSV Column Name: Provider Second Line Business Mailing Address
+    'mailing_telephone_number' => 26,   // CSV Column Name: Provider Business Mailing Address Telephone Number
+    'mailing_fax_number' => 27,         // CSV Column Name: Provider Business Mailing Address Fax Number
+    'mailing_state' => 23,              // CSV Column Name: Provider Business Mailing Address State Name
+    'mailing_postal_code' => 24,        // CSV Column Name: Provider Business Mailing Address Postal Code
+    'mailing_address_1' => 20,          // CSV Column Name: Provider First Line Business Mailing Address
+    'mailing_country_code' => 25,       // CSV Column Name: Provider Business Mailing Address Country Code (If outside U.S.)
+
+    'location_city' => 30,               // CSV Column Name: Provider Business Location Address City Name
+    'location_address_2' => 29,          // CSV Column Name: Provider Second Line Business Location Address
+    'location_telephone_number' => 34,   // CSV Column Name: Provider Business Location Address Telephone Number
+    'location_fax_number' => 35,         // CSV Column Name: Provider Business Location Address Fax Number
+    'location_state' => 31,              // CSV Column Name: Provider Business Location Address State Name
+    'location_postal_code' => 32,        // CSV Column Name: Provider Business Location Address Postal Code
+    'location_address_1' => 28,          // CSV Column Name: Provider First Line Business Location Address
+    'location_country_code' => 33,       // CSV Column Name: Provider Business Location Address Country Code (If outside U.S.)
 ];
