@@ -43,7 +43,7 @@ class CsvLine
             return trim($val, '"');
         }, $line);
 
-        $this->map = require_once('CsvDbMapping.php');
+        $this->map = require_once('CsvMapping.php');
     }
 
     public function __get($name)
@@ -59,12 +59,17 @@ class CsvLine
     {
         $taxonomies = [];
         for ($i = 0; $i < $this->map['taxonomiesQuantity']; $i++) {
-            $taxonomies[] = [
-                $this->line[$this->map['taxonomyCode_1'] + $i],
-                $this->line[$this->map['taxonomyLicense_1'] + $i],
-                $this->line[$this->map['taxonomyState_1'] + $i],
-                $this->line[$this->map['taxonomyPrimary_1'] + $i],
-            ];
+            $code = trim($this->line[$this->map['taxonomyCode_1'] + $i]);
+            $license = trim($this->line[$this->map['taxonomyLicense_1'] + $i]);
+            $state = trim($this->line[$this->map['taxonomyState_1'] + $i]);
+            $primary = trim($this->line[$this->map['taxonomyPrimary_1'] + $i]);
+            if ($code != '' && $license != '' && $state != '' && $primary != '')
+                $taxonomies[] = [
+                    'code' => $code,
+                    'license' => $license,
+                    'state' => $state,
+                    'primary' => $primary
+                ];
         }
         return $taxonomies;
     }
