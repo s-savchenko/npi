@@ -22,4 +22,11 @@ return [
     'last_updated' => 1,            //CSV Column Name: Last Update Date
     'name_prefix' => 1,             //CSV Column Name Provider Name Prefix Text
     'enumeration_date' => 1,        //CSV Column Name: Provider Enumeration Date
+
+    //taxonomies table
+    'taxonomiesQuantity' => 15,
+    'taxonomyCode_1' => 48,
+    'taxonomyLicense_1' => 49,
+    'taxonomyState_1' => 50,
+    'taxonomyPrimary_1' => 51,
 ];
