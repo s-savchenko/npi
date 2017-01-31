@@ -26,6 +26,7 @@ namespace app\models;
  * @property $name_prefix
  * @property $enumeration_date
  * @property $taxonomies
+ * @property $identifiers
  */
 class CsvLine
 {
@@ -50,6 +51,8 @@ class CsvLine
     {
         if ($name == 'taxonomies')
             return $this->getTaxonomies();
+        elseif ($name == 'identifiers')
+            return $this->getIdentifiers();
 
         $fieldNumber = $this->map[$name];
         return $this->line[$fieldNumber];
@@ -59,10 +62,10 @@ class CsvLine
     {
         $taxonomies = [];
         for ($i = 0; $i < $this->map['taxonomiesQuantity']; $i++) {
-            $code = trim($this->line[$this->map['taxonomyCode_1'] + $i]);
-            $license = trim($this->line[$this->map['taxonomyLicense_1'] + $i]);
-            $state = trim($this->line[$this->map['taxonomyState_1'] + $i]);
-            $primary = trim($this->line[$this->map['taxonomyPrimary_1'] + $i]);
+            $code = trim($this->line[$this->map['taxonomyCode_1'] + $i * 4]);
+            $license = trim($this->line[$this->map['taxonomyLicense_1'] + $i * 4]);
+            $state = trim($this->line[$this->map['taxonomyState_1'] + $i * 4]);
+            $primary = trim($this->line[$this->map['taxonomyPrimary_1'] + $i * 4]);
             if ($code != '' && $license != '' && $state != '' && $primary != '')
                 $taxonomies[] = [
                     'code' => $code,
@@ -72,5 +75,24 @@ class CsvLine
                 ];
         }
         return $taxonomies;
+    }
+
+    public function getIdentifiers()
+    {
+        $identifiers = [];
+        for ($i = 0; $i < $this->map['identifiersQuantity']; $i++) {
+            $identifier = trim($this->line[$this->map['identifierIdentifier_1'] + $i * 4]);
+            $code = trim($this->line[$this->map['identifierCode_1'] + $i * 4]);
+            $state = trim($this->line[$this->map['identifierState_1'] + $i * 4]);
+            $issuer = trim($this->line[$this->map['identifierIssuer_1'] + $i * 4]);
+            if ($identifier != '' && $code != '' && $state != '' && $issuer != '')
+                $identifiers[] = [
+                    'identifier' => $identifier,
+                    'code' => $code,
+                    'state' => $state,
+                    'issuer' => $issuer
+                ];
+        }
+        return $identifiers;
     }
 }
