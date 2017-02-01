@@ -32,10 +32,10 @@ return [
 
     //identifiers
     'identifiersQuantity' => 50,        // Quantity of identifiers group of fields
-    'identifierIdentifier_1' => 108,    // CSV Column Name: Other Provider Identifier_1
-    'identifierCode_1' => 109,          // CSV Column Name: Other Provider Identifier Type Code_1
-    'identifierState_1' => 110,         // CSV Column Name: Other Provider Identifier State_1
-    'identifierIssuer_1' => 111,        // CSV Column Name: Other Provider Identifier Issuer_1
+    'identifierIdentifier_1' => 107,    // CSV Column Name: Other Provider Identifier_1
+    'identifierCode_1' => 108,          // CSV Column Name: Other Provider Identifier Type Code_1
+    'identifierState_1' => 109,         // CSV Column Name: Other Provider Identifier State_1
+    'identifierIssuer_1' => 110,        // CSV Column Name: Other Provider Identifier Issuer_1
 
     //addresses
     'mailing_city' => 22,               // CSV Column Name: Provider Business Mailing Address City Name
