@@ -28,24 +28,41 @@ namespace app\models;
  * @property $taxonomies
  * @property $identifiers
  * @property $addresses
+ * @property $npi
+ * @property $mailing_city
+ * @property $mailing_address_2
+ * @property $mailing_telephone_number
+ * @property $mailing_fax_number
+ * @property $mailing_state
+ * @property $mailing_postal_code
+ * @property $mailing_address_1
+ * @property $mailing_country_code
+ * @property $location_city
+ * @property $location_address_2
+ * @property $location_telephone_number
+ * @property $location_fax_number
+ * @property $location_state
+ * @property $location_postal_code
+ * @property $location_address_1
+ * @property $location_country_code
+ * @property
  */
 class CsvLine
 {
     private $line, $map;
 
-    /**
-     * CsvHandler constructor.
-     * @param string $line
-     */
-    public function __construct($line)
+    public function __construct()
+    {
+        $this->map = require_once('CsvMapping.php');
+    }
+
+    public function handle($line)
     {
         $line = str_replace("\n", '', $line);
         $line = explode('","', $line);
         $this->line = array_map(function ($val) {
             return trim($val, '"');
         }, $line);
-
-        $this->map = require_once('CsvMapping.php');
     }
 
     public function __get($name)
@@ -56,7 +73,7 @@ class CsvLine
             return $this->getIdentifiers();
         elseif ($name == 'addresses')
             return $this->getAddresses();
-        elseif ($name == 'addresses')
+        elseif ($name == 'npi')
             return $this->getNpi();
 
         $fieldNumber = $this->map[$name];
@@ -89,17 +106,12 @@ class CsvLine
     {
         $taxonomies = [];
         for ($i = 0; $i < $this->map['taxonomiesQuantity']; $i++) {
-            $code = trim($this->line[$this->map['taxonomyCode_1'] + $i * 4]);
-            $license = trim($this->line[$this->map['taxonomyLicense_1'] + $i * 4]);
-            $state = trim($this->line[$this->map['taxonomyState_1'] + $i * 4]);
-            $primary = trim($this->line[$this->map['taxonomyPrimary_1'] + $i * 4]);
+            $code = $this->line[$this->map['taxonomyCode_1'] + $i * 4];
+            $license = $this->line[$this->map['taxonomyLicense_1'] + $i * 4];
+            $state = $this->line[$this->map['taxonomyState_1'] + $i * 4];
+            $primary = $this->line[$this->map['taxonomyPrimary_1'] + $i * 4];
             if ($code != '' && $license != '' && $state != '' && $primary != '')
-                $taxonomies[] = [
-                    'code' => $code,
-                    'license' => $license,
-                    'state' => $state,
-                    'primary' => $primary
-                ];
+                $taxonomies[] = [$code, $license, $state, $primary, $this->number];
         }
         return $taxonomies;
     }
@@ -108,17 +120,12 @@ class CsvLine
     {
         $identifiers = [];
         for ($i = 0; $i < $this->map['identifiersQuantity']; $i++) {
-            $identifier = trim($this->line[$this->map['identifierIdentifier_1'] + $i * 4]);
-            $code = trim($this->line[$this->map['identifierCode_1'] + $i * 4]);
-            $state = trim($this->line[$this->map['identifierState_1'] + $i * 4]);
-            $issuer = trim($this->line[$this->map['identifierIssuer_1'] + $i * 4]);
+            $identifier = $this->line[$this->map['identifierIdentifier_1'] + $i * 4];
+            $code = $this->line[$this->map['identifierCode_1'] + $i * 4];
+            $state = $this->line[$this->map['identifierState_1'] + $i * 4];
+            $issuer = $this->line[$this->map['identifierIssuer_1'] + $i * 4];
             if ($identifier != '' && $code != '' && $state != '' && $issuer != '')
-                $identifiers[] = [
-                    'identifier' => $identifier,
-                    'code' => $code,
-                    'state' => $state,
-                    'issuer' => $issuer
-                ];
+                $identifiers[] = [$identifier, $code, $state, $issuer, $this->number];
         }
         return $identifiers;
     }
@@ -127,26 +134,28 @@ class CsvLine
     {
         return [
             [
-                'city' => $this->line[$this->map['mailing_city']],
-                'address_2' => $this->line[$this->map['mailing_address_2']],
-                'telephone_number' => $this->line[$this->map['mailing_telephone_number']],
-                'fax_number' => $this->line[$this->map['mailing_fax_number']],
-                'state' => $this->line[$this->map['mailing_state']],
-                'postal_code' => $this->line[$this->map['mailing_postal_code']],
-                'address_1' => $this->line[$this->map['mailing_address_1']],
-                'country_code' => $this->line[$this->map['mailing_country_code']],
-                'purpose' => 'mailing'
+                $this->mailing_city,
+                $this->mailing_address_2,
+                $this->mailing_telephone_number,
+                $this->mailing_fax_number,
+                $this->mailing_state,
+                $this->mailing_postal_code,
+                $this->mailing_address_1,
+                $this->mailing_country_code,
+                'mailing',
+                $this->number
             ],
             [
-                'city' => $this->line[$this->map['location_city']],
-                'address_2' => $this->line[$this->map['location_address_2']],
-                'telephone_number' => $this->line[$this->map['location_telephone_number']],
-                'fax_number' => $this->line[$this->map['location_fax_number']],
-                'state' => $this->line[$this->map['location_state']],
-                'postal_code' => $this->line[$this->map['location_postal_code']],
-                'address_1' => $this->line[$this->map['location_address_1']],
-                'country_code' => $this->line[$this->map['location_country_code']],
-                'purpose' => 'location'
+                $this->location_city,
+                $this->location_address_2,
+                $this->location_telephone_number,
+                $this->location_fax_number,
+                $this->location_state,
+                $this->location_postal_code,
+                $this->location_address_1,
+                $this->location_country_code,
+                'location',
+                $this->number
             ],
         ];
     }
