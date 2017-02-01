@@ -19,7 +19,6 @@ class m170128_084702_npi extends Migration
                 'first_name' => $this->string(),
                 'last_name' => $this->string(),
                 'middle_name' => $this->string(),
-                'name' => $this->string(),
                 'sole_proprietor' => $this->string(),
                 'gender' => $this->string(),
                 'last_updated' => $this->string(),
