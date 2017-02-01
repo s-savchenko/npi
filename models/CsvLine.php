@@ -45,7 +45,9 @@ namespace app\models;
  * @property $location_postal_code
  * @property $location_address_1
  * @property $location_country_code
- * @property
+ * @property $organization_name
+ * @property $code
+ * @property $other_names
  */
 class CsvLine
 {
@@ -75,6 +77,8 @@ class CsvLine
             return $this->getAddresses();
         elseif ($name == 'npi')
             return $this->getNpi();
+        elseif ($name == 'other_names')
+            return $this->otherNames();
 
         $fieldNumber = $this->map[$name];
         if ($fieldNumber === false)
@@ -158,5 +162,13 @@ class CsvLine
                 $this->number
             ],
         ];
+    }
+
+    protected function otherNames()
+    {
+        $otherNames = [];
+        if ($this->organization_name != '' || $this->code != '')
+            $otherNames[] = [$this->organization_name, $this->code, $this->number];
+        return $otherNames;
     }
 }

@@ -55,4 +55,8 @@ return [
     'location_postal_code' => 32,        // CSV Column Name: Provider Business Location Address Postal Code
     'location_address_1' => 28,          // CSV Column Name: Provider First Line Business Location Address
     'location_country_code' => 33,       // CSV Column Name: Provider Business Location Address Country Code (If outside U.S.)
+
+    //other_names
+    'organization_name' => 11,           // CSV Column Name: Provider Other Organization Name
+    'code' => 12                         // CSV Column Name: Provider Other Organization Name Type Code
 ];
