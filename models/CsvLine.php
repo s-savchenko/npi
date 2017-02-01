@@ -58,6 +58,8 @@ class CsvLine
             return $this->getAddresses();
 
         $fieldNumber = $this->map[$name];
+        if ($fieldNumber === false)
+            return '';
         return $this->line[$fieldNumber];
     }
 
