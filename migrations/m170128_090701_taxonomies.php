@@ -12,7 +12,7 @@ class m170128_090701_taxonomies extends Migration
                 'id' => $this->primaryKey(),
                 'state' => $this->string(),
                 'code' => $this->string(),
-                'primary' => $this->boolean(),
+                'primary' => $this->string(),
                 'license' => $this->string(),
                 'desc' => $this->string(),
                 'number' => $this->bigInteger()

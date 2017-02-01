@@ -25,10 +25,10 @@ return [
 
     //taxonomies
     'taxonomiesQuantity' => 15,         // Quantity of taxonomy group of fields
-    'taxonomyCode_1' => 48,             // CSV Column Name: Healthcare Provider Taxonomy Code_1
-    'taxonomyLicense_1' => 49,          // CSV Column Name: Provider License Number_1
-    'taxonomyState_1' => 50,            // CSV Column Name: Provider License Number State Code_1
-    'taxonomyPrimary_1' => 51,          // CSV Column Name: Healthcare Provider Primary Taxonomy Switch_1
+    'taxonomyCode_1' => 47,             // CSV Column Name: Healthcare Provider Taxonomy Code_1
+    'taxonomyLicense_1' => 48,          // CSV Column Name: Provider License Number_1
+    'taxonomyState_1' => 49,            // CSV Column Name: Provider License Number State Code_1
+    'taxonomyPrimary_1' => 50,          // CSV Column Name: Healthcare Provider Primary Taxonomy Switch_1
 
     //identifiers
     'identifiersQuantity' => 50,        // Quantity of identifiers group of fields
