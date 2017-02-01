@@ -114,7 +114,7 @@ class CsvLine
             $license = $this->line[$this->map['taxonomyLicense_1'] + $i * 4];
             $state = $this->line[$this->map['taxonomyState_1'] + $i * 4];
             $primary = $this->line[$this->map['taxonomyPrimary_1'] + $i * 4];
-            if ($code != '' && $license != '' && $state != '' && $primary != '')
+            if ($code != '' || $license != '' || $state != '' || $primary != '')
                 $taxonomies[] = [$code, $license, $state, $primary, $this->number];
         }
         return $taxonomies;
@@ -128,7 +128,7 @@ class CsvLine
             $code = $this->line[$this->map['identifierCode_1'] + $i * 4];
             $state = $this->line[$this->map['identifierState_1'] + $i * 4];
             $issuer = $this->line[$this->map['identifierIssuer_1'] + $i * 4];
-            if ($identifier != '' && $code != '' && $state != '' && $issuer != '')
+            if ($identifier != '' || $code != '' || $state != '' || $issuer != '')
                 $identifiers[] = [$identifier, $code, $state, $issuer, $this->number];
         }
         return $identifiers;
