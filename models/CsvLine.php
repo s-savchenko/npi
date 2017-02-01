@@ -56,11 +56,33 @@ class CsvLine
             return $this->getIdentifiers();
         elseif ($name == 'addresses')
             return $this->getAddresses();
+        elseif ($name == 'addresses')
+            return $this->getNpi();
 
         $fieldNumber = $this->map[$name];
         if ($fieldNumber === false)
             return '';
         return $this->line[$fieldNumber];
+    }
+
+    protected function getNpi()
+    {
+        return [
+            $this->number,
+            $this->last_updated_epoch,
+            $this->enumeration_type,
+            $this->created_epoch,
+            $this->status,
+            $this->credential,
+            $this->first_name,
+            $this->last_name,
+            $this->middle_name,
+            $this->sole_proprietor,
+            $this->gender,
+            $this->last_updated,
+            $this->name_prefix,
+            $this->enumeration_date,
+        ];
     }
 
     protected function getTaxonomies()
