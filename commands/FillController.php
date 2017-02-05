@@ -78,6 +78,10 @@ class FillController extends Controller
 
         fclose($fp);
         echo 'End of populating DB: ' . date('c') . PHP_EOL;
+
+        echo 'Deleting files' . PHP_EOL;
+        unlink(Yii::getAlias('@runtime') . '/monthly.zip');
+        FileHandler::deleteDir(Yii::getAlias('@runtime') . '/monthly');
     }
 
     public function actionClearDb()
