@@ -12,16 +12,39 @@ class FillController extends Controller
 {
     public function actionPopulate()
     {
-        echo 'Deleting data from DB...' . PHP_EOL;
-        $this->actionClearDb();
+        $this->processing();
+    }
 
-        echo 'Downloading monthly file...' . PHP_EOL;
+    public function actionClearDb()
+    {
+        Yii::$app->db->createCommand('delete from npi')->execute();
+        Yii::$app->db->createCommand('delete from addresses')->execute();
+        Yii::$app->db->createCommand('delete from taxonomies')->execute();
+        Yii::$app->db->createCommand('delete from identifiers')->execute();
+        Yii::$app->db->createCommand('delete from other_names')->execute();
+    }
+
+    public function processing($monthly = true)
+    {
+        $period = $monthly ? 'monthly' : 'weekly';
+
+        if ($monthly) {
+            echo 'Deleting of data from DB...' . PHP_EOL;
+            Yii::$app->db->createCommand('delete from npi')->execute();
+            Yii::$app->db->createCommand('delete from addresses')->execute();
+            Yii::$app->db->createCommand('delete from taxonomies')->execute();
+            Yii::$app->db->createCommand('delete from identifiers')->execute();
+            Yii::$app->db->createCommand('delete from other_names')->execute();
+        }
+
+        printf('Downloading of %s file...%s', $period, PHP_EOL);
+        $param = $monthly ? 'monthlyFileXPath' : 'weeklyFileXPath';
         $link = FileHandler::getDownloadLink(
-            Yii::$app->params['npiFilesDownloadPage'], Yii::$app->params['monthlyFileXPath']);
-        $zip = Yii::getAlias('@runtime') . '/monthly.zip';
+            Yii::$app->params['npiFilesDownloadPage'], Yii::$app->params[$param]);
+        $zip = Yii::getAlias('@runtime') . '/' . $period . '.zip';
         FileHandler::download($link, $zip);
 
-        echo 'Unzipping monthly file...' . PHP_EOL;
+        printf('Unzipping of %s file...', $period, PHP_EOL);
         FileHandler::unzip($zip);
 
         $zip = rtrim($zip, '.zip');
@@ -34,7 +57,7 @@ class FillController extends Controller
             }
         }
 
-        echo 'Start of populating DB: ' . date('c') . PHP_EOL;
+        printf('Start of DB %s: %s%s', $monthly ? 'populating' : 'updating', date('c'), PHP_EOL);
         $fp = fopen($fileName, "r");
         fgets($fp);// Skip headers
 
@@ -56,6 +79,13 @@ class FillController extends Controller
             $i++;
             $y++;
             if ($i == 10000) {
+                if (!$monthly) {
+                    $npiIds = array_map(function ($npiRow) {
+                        return $npiRow[0];
+                    }, $npi);
+                    $npiIds = '(' . implode(',', $npiIds) . ')';
+                    Yii::$app->db->createCommand('delete from npi where number in ' . $npiIds)->execute();
+                }
                 Yii::$app->db->createCommand()
                     ->batchInsert('npi', CsvDbMapping::getNpiFields(), $npi)->execute();
                 Yii::$app->db->createCommand()
@@ -80,19 +110,10 @@ class FillController extends Controller
         }
 
         fclose($fp);
-        echo 'End of populating DB: ' . date('c') . PHP_EOL;
+        printf('End of DB %s: %s%s', $monthly ? 'populating' : 'updating', date('c'), PHP_EOL);
 
-        echo 'Deleting temporary files...' . PHP_EOL;
-        unlink(Yii::getAlias('@runtime') . '/monthly.zip');
-        FileHandler::deleteDir(Yii::getAlias('@runtime') . '/monthly');
-    }
-
-    public function actionClearDb()
-    {
-        Yii::$app->db->createCommand('delete from npi')->execute();
-        Yii::$app->db->createCommand('delete from addresses')->execute();
-        Yii::$app->db->createCommand('delete from taxonomies')->execute();
-        Yii::$app->db->createCommand('delete from identifiers')->execute();
-        Yii::$app->db->createCommand('delete from other_names')->execute();
+        echo 'Deleting of temporary files...' . PHP_EOL;
+        unlink(Yii::getAlias('@runtime') . '/' . $period . '.zip');
+        FileHandler::deleteDir(Yii::getAlias('@runtime') . '/' . $period);
     }
 }
