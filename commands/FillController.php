@@ -15,15 +15,6 @@ class FillController extends Controller
         $this->processing();
     }
 
-    public function actionClearDb()
-    {
-        Yii::$app->db->createCommand('delete from npi')->execute();
-        Yii::$app->db->createCommand('delete from addresses')->execute();
-        Yii::$app->db->createCommand('delete from taxonomies')->execute();
-        Yii::$app->db->createCommand('delete from identifiers')->execute();
-        Yii::$app->db->createCommand('delete from other_names')->execute();
-    }
-
     public function processing($monthly = true)
     {
         $period = $monthly ? 'monthly' : 'weekly';
