@@ -15,10 +15,12 @@ class m170201_151011_create_table_other_names extends Migration
                 'number' => $this->bigInteger()
             ]
         );
+        $this->addForeignKey('fk_other_names_npi', 'other_names', 'number', 'npi', 'number', 'CASCADE');
     }
 
     public function down()
     {
+        $this->dropForeignKey('fk_other_names_npi', 'other_names');
         $this->dropTable('other_names');
     }
 }

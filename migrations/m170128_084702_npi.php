@@ -9,7 +9,6 @@ class m170128_084702_npi extends Migration
         $this->createTable(
             'npi',
             [
-                'id' => $this->primaryKey(),
                 'number' => $this->bigInteger(),
                 'last_updated_epoch' => $this->bigInteger(),
                 'enumeration_type' => $this->string(),
@@ -27,12 +26,11 @@ class m170128_084702_npi extends Migration
             ]
         );
 
-        $this->createIndex('npi-number-unique', 'npi', 'number', true);
+        $this->addPrimaryKey('pk_npi', 'npi', 'number');
     }
 
     public function down()
     {
-        $this->dropIndex('npi-number-unique', 'npi');
         $this->dropTable('npi');
     }
 }

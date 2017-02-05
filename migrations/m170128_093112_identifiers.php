@@ -17,10 +17,12 @@ class m170128_093112_identifiers extends Migration
                 'number' => $this->bigInteger()
             ]
         );
+        $this->addForeignKey('fk_identifiers_npi', 'identifiers', 'number', 'npi', 'number', 'CASCADE');
     }
 
     public function down()
     {
+        $this->dropForeignKey('fk_identifiers_npi', 'identifiers');
         $this->dropTable('identifiers');
     }
 }

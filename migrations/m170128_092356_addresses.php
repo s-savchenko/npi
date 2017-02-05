@@ -24,10 +24,12 @@ class m170128_092356_addresses extends Migration
                 'number' => $this->bigInteger()
             ]
         );
+        $this->addForeignKey('fk_addresses_npi', 'addresses', 'number', 'npi', 'number', 'CASCADE');
     }
 
     public function down()
     {
+        $this->dropForeignKey('fk_addresses_npi', 'addresses');
         $this->dropTable('addresses');
     }
 }
