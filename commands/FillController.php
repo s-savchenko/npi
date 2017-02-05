@@ -2,78 +2,22 @@
 
 namespace app\commands;
 
+use app\models\CsvDbMapping;
 use app\models\CsvLine;
 use yii\console\Controller;
 use Yii;
 
 class FillController extends Controller
 {
-    protected function getNpiFields()
-    {
-        return [
-            'number',
-            'last_updated_epoch',
-            'enumeration_type',
-            'created_epoch',
-            'status',
-            'credential',
-            'first_name',
-            'last_name',
-            'middle_name',
-            'sole_proprietor',
-            'gender',
-            'last_updated',
-            'name_prefix',
-            'enumeration_date',
-        ];
-    }
-
-    protected function getAddressesFields()
-    {
-        return [
-            'city',
-            'address_2',
-            'telephone_number',
-            'fax_number',
-            'state',
-            'postal_code',
-            'address_1',
-            'country_code',
-            'purpose',
-            'number',
-        ];
-    }
-
-    protected function getTaxonomiesFields()
-    {
-        return [
-            'code', 'license', 'state', 'primary', 'number'
-        ];
-    }
-
-    protected function getIdentifiersFields()
-    {
-        return [
-            'identifier', 'code', 'state', 'issuer', 'number'
-        ];
-    }
-
-    protected function getOtherNamesFields()
-    {
-        return [
-            'organization_name', 'code', 'number'
-        ];
-    }
-
     public function actionIndex()
     {
-        echo date('c').PHP_EOL;
         Yii::$app->db->createCommand('delete from npi')->execute();
         Yii::$app->db->createCommand('delete from addresses')->execute();
         Yii::$app->db->createCommand('delete from taxonomies')->execute();
         Yii::$app->db->createCommand('delete from identifiers')->execute();
         Yii::$app->db->createCommand('delete from other_names')->execute();
 
+        echo date('c').PHP_EOL;
         $file = dirname(__DIR__) . '/web/full.csv';
 //        $file = dirname(__DIR__) . '/web/weekly.csv';
         $fp = fopen($file, "r");
@@ -85,7 +29,7 @@ class FillController extends Controller
         $identifiers = [];
         $otherNames = [];
         $i = 0;
-        $y = 0;
+//        $y = 0;
         $csvLine = new CsvLine();
         while (false !== ($line = fgets($fp))) {
             $csvLine->handle($line);
@@ -95,18 +39,18 @@ class FillController extends Controller
             $identifiers = array_merge($identifiers, $csvLine->identifiers);
             $otherNames = array_merge($otherNames, $csvLine->other_names);
             $i++;
-            $y++;
+//            $y++;
             if ($i == 10000) {
                 Yii::$app->db->createCommand()
-                    ->batchInsert('npi', $this->npiFields, $npi)->execute();
+                    ->batchInsert('npi', CsvDbMapping::getNpiFields(), $npi)->execute();
                 Yii::$app->db->createCommand()
-                    ->batchInsert('addresses', $this->addressesFields, $addresses)->execute();
+                    ->batchInsert('addresses', CsvDbMapping::getAddressesFields(), $addresses)->execute();
                 Yii::$app->db->createCommand()
-                    ->batchInsert('taxonomies', $this->taxonomiesFields, $taxonomies)->execute();
+                    ->batchInsert('taxonomies', CsvDbMapping::getTaxonomiesFields(), $taxonomies)->execute();
                 Yii::$app->db->createCommand()
-                    ->batchInsert('identifiers', $this->identifiersFields, $identifiers)->execute();
+                    ->batchInsert('identifiers', CsvDbMapping::getIdentifiersFields(), $identifiers)->execute();
                 Yii::$app->db->createCommand()
-                    ->batchInsert('other_names', $this->otherNamesFields, $otherNames)->execute();
+                    ->batchInsert('other_names', CsvDbMapping::getOtherNamesFields(), $otherNames)->execute();
                 $npi = [];
                 $addresses = [];
                 $taxonomies = [];
@@ -114,9 +58,9 @@ class FillController extends Controller
                 $otherNames = [];
                 $i = 0;
             }
-            if ($y == 10000) {
-                break;
-            }
+//            if ($y == 100000) {
+//                break;
+//            }
 
         }
 
