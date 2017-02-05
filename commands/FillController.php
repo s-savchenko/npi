@@ -4,23 +4,35 @@ namespace app\commands;
 
 use app\models\CsvDbMapping;
 use app\models\CsvLine;
+use app\models\FileHandler;
 use yii\console\Controller;
 use Yii;
 
 class FillController extends Controller
 {
-    public function actionIndex()
+    public function actionPopulate()
     {
-        Yii::$app->db->createCommand('delete from npi')->execute();
-        Yii::$app->db->createCommand('delete from addresses')->execute();
-        Yii::$app->db->createCommand('delete from taxonomies')->execute();
-        Yii::$app->db->createCommand('delete from identifiers')->execute();
-        Yii::$app->db->createCommand('delete from other_names')->execute();
+        echo 'Downloading monthly file...' . PHP_EOL;
+        $link = FileHandler::getDownloadLink(
+            Yii::$app->params['npiFilesDownloadPage'], Yii::$app->params['monthlyFileXPath']);
+        $zip = Yii::getAlias('@runtime') . '/monthly.zip';
+        FileHandler::download($link, $zip);
 
-        echo date('c').PHP_EOL;
-        $file = dirname(__DIR__) . '/web/full.csv';
-//        $file = dirname(__DIR__) . '/web/weekly.csv';
-        $fp = fopen($file, "r");
+        echo 'Unzipping monthly file...' . PHP_EOL;
+        FileHandler::unzip($zip);
+
+        $zip = rtrim($zip, '.zip');
+        $files = glob($zip . '*.csv');
+        $fileName = '';
+        foreach ($files as $file) {
+            if (strpos($file, 'FileHeader') === false) {
+                $fileName = $file;
+                break;
+            }
+        }
+
+        echo 'Start of populating DB: ' . date('c') . PHP_EOL;
+        $fp = fopen($fileName, "r");
         fgets($fp);// Skip headers
 
         $npi = [];
@@ -29,7 +41,7 @@ class FillController extends Controller
         $identifiers = [];
         $otherNames = [];
         $i = 0;
-//        $y = 0;
+        $y = 0;
         $csvLine = new CsvLine();
         while (false !== ($line = fgets($fp))) {
             $csvLine->handle($line);
@@ -39,7 +51,7 @@ class FillController extends Controller
             $identifiers = array_merge($identifiers, $csvLine->identifiers);
             $otherNames = array_merge($otherNames, $csvLine->other_names);
             $i++;
-//            $y++;
+            $y++;
             if ($i == 10000) {
                 Yii::$app->db->createCommand()
                     ->batchInsert('npi', CsvDbMapping::getNpiFields(), $npi)->execute();
@@ -58,13 +70,22 @@ class FillController extends Controller
                 $otherNames = [];
                 $i = 0;
             }
-//            if ($y == 100000) {
-//                break;
-//            }
+            if ($y == 100000) {
+                break;
+            }
 
         }
 
         fclose($fp);
-        echo date('c').PHP_EOL;
+        echo 'End of populating DB: ' . date('c') . PHP_EOL;
+    }
+
+    public function actionClearDb()
+    {
+        Yii::$app->db->createCommand('delete from npi')->execute();
+        Yii::$app->db->createCommand('delete from addresses')->execute();
+        Yii::$app->db->createCommand('delete from taxonomies')->execute();
+        Yii::$app->db->createCommand('delete from identifiers')->execute();
+        Yii::$app->db->createCommand('delete from other_names')->execute();
     }
 }
