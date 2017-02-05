@@ -12,6 +12,9 @@ class FillController extends Controller
 {
     public function actionPopulate()
     {
+        echo 'Deleting data from DB...' . PHP_EOL;
+        $this->actionClearDb();
+
         echo 'Downloading monthly file...' . PHP_EOL;
         $link = FileHandler::getDownloadLink(
             Yii::$app->params['npiFilesDownloadPage'], Yii::$app->params['monthlyFileXPath']);
@@ -79,7 +82,7 @@ class FillController extends Controller
         fclose($fp);
         echo 'End of populating DB: ' . date('c') . PHP_EOL;
 
-        echo 'Deleting files' . PHP_EOL;
+        echo 'Deleting temporary files...' . PHP_EOL;
         unlink(Yii::getAlias('@runtime') . '/monthly.zip');
         FileHandler::deleteDir(Yii::getAlias('@runtime') . '/monthly');
     }
