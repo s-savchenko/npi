@@ -15,6 +15,11 @@ class FillController extends Controller
         $this->processing();
     }
 
+    public function actionUpdate()
+    {
+        $this->processing(false);
+    }
+
     public function processing($monthly = true)
     {
         $period = $monthly ? 'monthly' : 'weekly';
@@ -29,9 +34,11 @@ class FillController extends Controller
         }
 
         printf('Downloading of %s file...%s', $period, PHP_EOL);
-        $param = $monthly ? 'monthlyFileXPath' : 'weeklyFileXPath';
+        $fileIndex = $monthly ? 'monthlyFileIndex' : 'weeklyFileIndex';
+        $fileIndex = Yii::$app->params[$fileIndex];
         $link = FileHandler::getDownloadLink(
-            Yii::$app->params['npiFilesDownloadPage'], Yii::$app->params[$param]);
+            Yii::$app->params['npiFilesDownloadPage'], Yii::$app->params['linkXPath'], $fileIndex);
+        $link = $link['link'];
         $zip = Yii::getAlias('@runtime') . '/' . $period . '.zip';
         FileHandler::download($link, $zip);
 

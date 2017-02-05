@@ -13,7 +13,7 @@ use DOMXPath;
 
 class FileHandler
 {
-    public static function getDownloadLink($url, $xPath)
+    public static function getDownloadLink($url, $xPath, $fileIndex)
     {
         libxml_use_internal_errors(true);
         $opts = [
@@ -27,11 +27,15 @@ class FileHandler
         $dom = new DomDocument();
         $dom->loadHTML($html);
         $domXPath = new DomXPath($dom);
-        $link = $domXPath->query($xPath)[0]->getAttribute('href');
-
+        $link = $domXPath->query($xPath)[$fileIndex]->getAttribute('href');
+        $caption = $domXPath->query($xPath)[$fileIndex]->nodeValue;
         $page = explode('/', $url);
         $page = array_slice($page, 0, count($page) - 1);
-        return implode('/', $page) . '/' . $link;
+        $link = implode('/', $page) . '/' . $link;
+        return [
+            'link' => $link,
+            'caption' => $caption
+        ];
     }
 
     public static function download($url, $path)
