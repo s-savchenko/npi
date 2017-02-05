@@ -36,7 +36,7 @@ AppAsset::register($this);
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
-            ['label' => 'Weekly update', 'url' => ['/site/index']],
+            ['label' => 'Update', 'url' => ['/site/index']],
             ['label' => 'Populate', 'url' => ['/site/populate']],
         ],
     ]);
