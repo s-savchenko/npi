@@ -9,6 +9,7 @@ class m170201_151011_create_table_other_names extends Migration
         $this->createTable(
             'other_names',
             [
+                'id' => $this->primaryKey(),
                 'organization_name' => $this->string(),
                 'code' => $this->string(),
                 'type' => $this->string(),

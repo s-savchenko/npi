@@ -9,6 +9,7 @@ class m170128_093112_identifiers extends Migration
         $this->createTable(
             'identifiers',
             [
+                'id' => $this->primaryKey(),
                 'code' => $this->string(),
                 'issuer' => $this->string(),
                 'state' => $this->string(),
