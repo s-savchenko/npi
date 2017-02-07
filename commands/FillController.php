@@ -38,6 +38,7 @@ class FillController extends Controller
         $fileIndex = Yii::$app->params[$fileIndex];
         $link = FileHandler::getDownloadLink(
             Yii::$app->params['npiFilesDownloadPage'], Yii::$app->params['linkXPath'], $fileIndex);
+        printf('File: %s (%s)%s', $link['caption'], $link['link'], PHP_EOL);
         $link = $link['link'];
         $zip = Yii::getAlias('@runtime') . '/' . $period . '.zip';
         FileHandler::download($link, $zip);
@@ -46,7 +47,7 @@ class FillController extends Controller
         FileHandler::unzip($zip);
 
         $zip = rtrim($zip, '.zip');
-        $files = glob($zip . '*.csv');
+        $files = glob($zip . '/*.csv');
         $fileName = '';
         foreach ($files as $file) {
             if (strpos($file, 'FileHeader') === false) {
