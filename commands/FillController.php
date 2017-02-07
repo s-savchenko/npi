@@ -78,23 +78,7 @@ class FillController extends Controller
             $i++;
             $y++;
             if ($i == 10000) {
-                if (!$monthly) {
-                    $npiIds = array_map(function ($npiRow) {
-                        return $npiRow[0];
-                    }, $npi);
-                    $npiIds = '(' . implode(',', $npiIds) . ')';
-                    Yii::$app->db->createCommand('delete from npi where number in ' . $npiIds)->execute();
-                }
-                Yii::$app->db->createCommand()
-                    ->batchInsert('npi', CsvDbMapping::getNpiFields(), $npi)->execute();
-                Yii::$app->db->createCommand()
-                    ->batchInsert('addresses', CsvDbMapping::getAddressesFields(), $addresses)->execute();
-                Yii::$app->db->createCommand()
-                    ->batchInsert('taxonomies', CsvDbMapping::getTaxonomiesFields(), $taxonomies)->execute();
-                Yii::$app->db->createCommand()
-                    ->batchInsert('identifiers', CsvDbMapping::getIdentifiersFields(), $identifiers)->execute();
-                Yii::$app->db->createCommand()
-                    ->batchInsert('other_names', CsvDbMapping::getOtherNamesFields(), $otherNames)->execute();
+                $this->insertRows($monthly, $npi, $addresses, $taxonomies, $identifiers, $otherNames);
                 $npi = [];
                 $addresses = [];
                 $taxonomies = [];
@@ -105,8 +89,8 @@ class FillController extends Controller
             if ($y == 100000) {
                 break;
             }
-
         }
+        $this->insertRows($monthly, $npi, $addresses, $taxonomies, $identifiers, $otherNames);
 
         fclose($fp);
         printf('End of DB %s: %s%s', $monthly ? 'populating' : 'updating', date('c'), PHP_EOL);
@@ -114,5 +98,26 @@ class FillController extends Controller
         echo 'Deleting of temporary files...' . PHP_EOL;
         unlink(Yii::getAlias('@runtime') . '/' . $period . '.zip');
         FileHandler::deleteDir(Yii::getAlias('@runtime') . '/' . $period);
+    }
+
+    private function insertRows($monthly, $npi, $addresses, $taxonomies, $identifiers, $otherNames)
+    {
+        if (!$monthly) {
+            $npiIds = array_map(function ($npiRow) {
+                return $npiRow[0];
+            }, $npi);
+            $npiIds = '(' . implode(',', $npiIds) . ')';
+            Yii::$app->db->createCommand('delete from npi where number in ' . $npiIds)->execute();
+        }
+        Yii::$app->db->createCommand()
+            ->batchInsert('npi', CsvDbMapping::getNpiFields(), $npi)->execute();
+        Yii::$app->db->createCommand()
+            ->batchInsert('addresses', CsvDbMapping::getAddressesFields(), $addresses)->execute();
+        Yii::$app->db->createCommand()
+            ->batchInsert('taxonomies', CsvDbMapping::getTaxonomiesFields(), $taxonomies)->execute();
+        Yii::$app->db->createCommand()
+            ->batchInsert('identifiers', CsvDbMapping::getIdentifiersFields(), $identifiers)->execute();
+        Yii::$app->db->createCommand()
+            ->batchInsert('other_names', CsvDbMapping::getOtherNamesFields(), $otherNames)->execute();
     }
 }
