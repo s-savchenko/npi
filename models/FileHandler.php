@@ -60,43 +60,17 @@ class FileHandler
 
     public static function unzip($srcFile, $destDir = false, $createZipNameDir = true, $overwrite = true)
     {
-        if ($zip = zip_open($srcFile))
-        {
-            if ($zip)
-            {
-                $splitter = ($createZipNameDir === true) ? "." : "/";
-                if ($destDir === false)
-                    $destDir = substr($srcFile, 0, strrpos($srcFile, $splitter)) . "/";
-
-                self::createDir($destDir);
-
-                while ($zipEntry = zip_read($zip))
-                {
-                    $posLastSlash = strrpos(zip_entry_name($zipEntry), "/");
-                    if ($posLastSlash !== false)
-                        self::createDir($destDir.substr(zip_entry_name($zipEntry), 0, $posLastSlash+1));
-
-                    if (zip_entry_open($zip, $zipEntry, "r"))
-                    {
-                        $fileName = $destDir . zip_entry_name($zipEntry);
-                        if ($overwrite === true || $overwrite === false && !is_file($fileName))
-                        {
-                            $fstream = zip_entry_read($zipEntry, zip_entry_filesize($zipEntry));
-                            file_put_contents($fileName, $fstream);
-                            chmod($fileName, 0777);
-                        }
-                        zip_entry_close($zipEntry);
-                    }
-                }
-                zip_close($zip);
-            }
+        $zip = new \ZipArchive();
+        if ($zip->open($srcFile) === true) {
+            $splitter = ($createZipNameDir === true) ? "." : "/";
+            if ($destDir === false)
+                $destDir = substr($srcFile, 0, strrpos($srcFile, $splitter)) . "/";
+            self::createDir($destDir);
+            $zip->extractTo($destDir);
+            $zip->close();
+            return true;
         }
-        else
-        {
-            return false;
-        }
-
-        return true;
+        return false;
     }
 
     private static function createDir($path)
